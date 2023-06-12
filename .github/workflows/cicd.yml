@@ -24,8 +24,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: |
+          node_modules
+          /home/runner/.cache/Cypress
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - run: npm run e2e:headless
       #ARTIFACT
       - uses: actions/upload-artifact@v3
