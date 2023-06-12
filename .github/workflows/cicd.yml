@@ -18,8 +18,16 @@ jobs:
           path: cypress/videos
 
     # SAVE CACHE
-      - uses: actions/cache/save@v3
-        id: cache
+      - name: Cache Primes
+        id: cache-primes
+        uses: actions/cache@v3
         with:
-          path: cypress/cache
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          path: prime-numbers
+          key: ${{ runner.os }}-primes
+
+      - name: Generate Prime Numbers
+        if: steps.cache-primes.outputs.cache-hit != 'true'
+        run: /generate-primes.sh -d prime-numbers
+
+      - name: Use Prime Numbers
+        run: /primes.sh -d prime-numbers
