@@ -9,3 +9,10 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run e2e:headless
+
+      #ARTIFACT
+      - uses: actions/upload-artifact@v3
+      if: always()
+        with:
+          name: e2e-tests
+          path: cypress/videos
