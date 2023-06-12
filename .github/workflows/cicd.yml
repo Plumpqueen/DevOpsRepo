@@ -9,15 +9,17 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run e2e:headless
-      # SAVE CACHE
-      - uses: actions/cache/save@v3
-        id: cache
-        with:
-          path: cypress/cache
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      
       #ARTIFACT
       - uses: actions/upload-artifact@v3
       #if: ${{ always() }}
         with:
           name: e2e-tests
           path: cypress/videos
+
+    # SAVE CACHE
+      - uses: actions/cache/save@v3
+        id: cache
+        with:
+          path: cypress/cache
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
