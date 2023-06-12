@@ -13,7 +13,7 @@ jobs:
       - uses: actions/cache/save@v3
         id: cache
         with:
-          path: path/to/dependencies
+          path: cypress/cache
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       #ARTIFACT
       - uses: actions/upload-artifact@v3
