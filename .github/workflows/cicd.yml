@@ -2,9 +2,53 @@ name: test workflow du projet
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  build:
+  #build:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    #CACHE
+  #    - uses: actions/cache@v3
+  #      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+  #      with:
+  #        path: |
+  #          node_modules
+  #          /home/runner/.cache/Cypress
+  #        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #    - name: Install depedencies and build
+  #      run: |
+  #        npm install
+  #        npm run build
+  #test:
+  #  runs-on: ubuntu-latest
+  #  needs: build
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: actions/cache@v3
+  #      with:
+  #        path: |
+  #          node_modules
+  #          /home/runner/.cache/Cypress
+  #        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #    - run: npm run e2e:headless
+  #    #ARTIFACT
+  #    - uses: actions/upload-artifact@v3
+  #      if: ${{ always() }}
+  #      with:
+  #        name: e2e-tests
+  #        path: cypress/videos
+  deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Start SSH
+        uses: Tofandel/ssh-server-action@v1.0.0
+        with:
+          hostname: ${{secrets.SSH_HOST}} # Optional, the display hostname of the server
+          port: 3000 # Optional, default value is 22. The exposed ssh port
+          user_name: ${{secrets.SSH_USER}} # Optional, default value is ssh-user
+          #user_password: $SECRET_PASSWORD # Optional
+          sudo_access: true # Optional, allow user to use sudo without password, default: false
+          public_key: ${{secrets.SSH_KEY}} # Optional, Public key authorized to access the server
+          public_key_url: https://github.com/${{ github.actor }}.keys # Optional, url to retrieve the public key
       - uses: actions/checkout@v3
       #CACHE
       - uses: actions/cache@v3
@@ -18,24 +62,4 @@ jobs:
         run: |
           npm install
           npm run build
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run e2e:headless
-      #ARTIFACT
-      - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
-        with:
-          name: e2e-tests
-          path: cypress/videos
-
-    # SAVE CACHE
 
