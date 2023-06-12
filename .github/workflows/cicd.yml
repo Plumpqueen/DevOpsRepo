@@ -39,6 +39,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Start SSH
         uses: Tofandel/ssh-server-action@v1.0.0
         with:
