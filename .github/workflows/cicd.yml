@@ -54,9 +54,10 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      name: Build and push
-      uses: docker/build-push-action@v4
-      with:
-        push: true
-        tags: user/app:latest
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: user/app:latest
 
