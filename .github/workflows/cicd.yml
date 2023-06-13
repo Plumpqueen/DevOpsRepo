@@ -80,8 +80,8 @@ jobs:
           ssh-private-key: ${{secrets.SSH_KEY}}
       - run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST}} "\
-          docker pull ghcr.io/plumpqueen/nodejs-my-website:latest && \
-          docker stop next && \
-          docker rn next && \
-          docker run -d -p 3000:3000 --name next ghcr.io/plumpqueen/nodejs-my-website:latest"
+          sudo docker pull ghcr.io/plumpqueen/nodejs-my-website:latest && \
+          sudo docker stop next && \
+          sudo docker rn next && \
+          sudo docker run -d -p 3000:3000 --name next ghcr.io/plumpqueen/nodejs-my-website:latest"
         #Pour un repo privé, il faura fair un docker login
