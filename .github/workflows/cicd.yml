@@ -52,7 +52,7 @@ jobs:
   #        pm2 restart all"
 
 
-  login-build-puch-docker:
+  login-build-push-docker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -64,7 +64,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{github.actor}}
-          password: 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
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
