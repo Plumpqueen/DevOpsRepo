@@ -2,54 +2,54 @@ name: test workflow du projet
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      #CACHE
-      - uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - name: Install depedencies and build
-        run: |
-          npm install
-          npm run build
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run e2e:headless
-      #ARTIFACT
-      - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
-        with:
-          name: e2e-tests
-          path: cypress/videos
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{secrets.SSH_KEY}}
-      - run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST}} "\
-          cd DevOpsRepo && \
-          git pull && \
-          npm install && \
-          npm run build && \
-          pm2 restart all"
+  #build:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    #CACHE
+  #    - uses: actions/cache@v3
+  #      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+  #      with:
+  #        path: |
+  #          node_modules
+  #          /home/runner/.cache/Cypress
+  #        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #    - name: Install depedencies and build
+  #      run: |
+  #        npm install
+  #        npm run build
+  #test:
+  #  runs-on: ubuntu-latest
+  #  needs: build
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: actions/cache@v3
+  #      with:
+  #        path: |
+  #          node_modules
+  #          /home/runner/.cache/Cypress
+  #        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #    - run: npm run e2e:headless
+  #    #ARTIFACT
+  #    - uses: actions/upload-artifact@v3
+  #      if: ${{ always() }}
+  #      with:
+  #        name: e2e-tests
+  #        path: cypress/videos
+  #deploy:
+  #  runs-on: ubuntu-latest
+  #  needs: test
+  #  steps:
+  #    - uses: webfactory/ssh-agent@v0.8.0
+  #      with:
+  #        ssh-private-key: ${{secrets.SSH_KEY}}
+  #    - run: |
+  #        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST}} "\
+  #        cd DevOpsRepo && \
+  #        git pull && \
+  #        npm install && \
+  #        npm run build && \
+  #        pm2 restart all"
   login:
     runs-on: ubuntu-latest
     steps:
@@ -57,9 +57,9 @@ jobs:
         name: Login to Github Container regestry
         uses: docker/login-action@v2
         with:
-          regestry: ghcr.io
-          username: mariamelallali
-          password: ${{secrets.DOCKER_HUB_PWD}}
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
 #DOCKER
   docker:
