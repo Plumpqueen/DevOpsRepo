@@ -50,6 +50,13 @@ jobs:
           npm install && \
           npm run build && \
           pm2 restart all"
-
-
+#DOCKER
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: user/app:latest
 
