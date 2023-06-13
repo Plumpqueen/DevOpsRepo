@@ -73,7 +73,7 @@ jobs:
 
   deploy-docker:
     runs-on: ubuntu-latest
-    needs: login-build-puch-docker
+    needs: login-build-push-docker
     steps:
       - uses: webfactory/ssh-agent@v0.8.0
         with:
