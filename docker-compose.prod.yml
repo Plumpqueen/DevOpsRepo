@@ -1,0 +1,5 @@
+services:
+  next:
+    image: ghcr.io/plumpqueen/nodejs-my-website:latest
+    ports:
+      - 3000:3000
