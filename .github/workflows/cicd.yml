@@ -58,8 +58,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           regestry: ghcr.io
-          username: Plumpqueen
-          password: ${{secrets.GIT_PWD}}
+          username: mariamelallali
+          password: ${{secrets.DOCKER_HUB_PWD}}
 
 #DOCKER
   docker:
