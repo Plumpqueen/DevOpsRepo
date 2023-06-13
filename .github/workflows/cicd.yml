@@ -59,7 +59,7 @@ jobs:
         with:
           regestry: ghcr.io
           username: Plumpqueen
-          password: ${{secrets.TOKEN_GIT}}
+          password: ${{secrets.GIT_PWD}}
 
 #DOCKER
   docker:
