@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     environment:
-      name: developpement_environment
+      name: production_environment
     steps:
       - uses: webfactory/ssh-agent@v0.8.0
         with:
