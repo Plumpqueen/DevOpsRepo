@@ -2,94 +2,75 @@ name: test workflow du projet
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  build_dev:
+
+  build:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      #CACHE
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            node_modules
+            /home/runner/.cache/Cypress
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Install depedencies and build
+        run: |
+          npm install
+          npm run build
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            /home/runner/.cache/Cypress
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - run: npm run e2e:headless
+      #ARTIFACT
+      - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: e2e-tests
+          path: cypress/videos
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: test
     environment:
       name: developpement_environment
     steps:
-      - uses: actions/checkout@v3
-      #CACHE
-      - uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      - uses: webfactory/ssh-agent@v0.8.0
         with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - name: Install depedencies and build
-        run: |
-          npm install
-          npm run build
-  test_dev:
-    runs-on: ubuntu-latest
-    needs: build_dev
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run e2e:headless
-      #ARTIFACT
-      - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
-        with:
-          name: e2e-tests
-          path: cypress/videos
-  build_poduction:
-    runs-on: ubuntu-latest
-    needs: test_poduction
-    environment:
-      name: production_environment
-    steps:
-      - uses: actions/checkout@v3
-      #CACHE
-      - uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - name: Install depedencies and build
-        run: |
-          npm install
-          npm run build
-  test_production:
-    runs-on: ubuntu-latest
-    needs: build_poduction
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run e2e:headless
-      #ARTIFACT
-      - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
-        with:
-          name: e2e-tests
-          path: cypress/videos
-  #deploy:
-  #  runs-on: ubuntu-latest
-  #  needs: test
-  #  steps:
-  #    - uses: webfactory/ssh-agent@v0.8.0
-  #      with:
-  #        ssh-private-key: ${{secrets.SSH_KEY}}
-  #    - run: |
-  #        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST}} "\
-  #        cd DevOpsRepo && \
-  #        git pull && \
-  #        npm install && \
-  #        npm run build && \
-  #        pm2 restart all"
+          ssh-private-key: ${{secrets.SSH_KEY}}
+      - run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST}} "\
+          cd DevOpsRepo && \
+          git pull && \
+          npm install && \
+          npm run build && \
+          pm2 restart all"
 
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: developpement_environment
+    steps:
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{secrets.SSH_KEY}}
+      - run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST}} "\
+          cd DevOpsRepo && \
+          git pull && \
+          npm install && \
+          npm run build && \
+          pm2 restart all"
 #DOCKER 
 #  login-build-push-docker:
 #    runs-on: ubuntu-latest
