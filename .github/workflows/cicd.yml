@@ -60,6 +60,7 @@ jobs:
     needs: test
     environment:
       name: production_environment
+      url: https://github.com
     steps:
       - uses: webfactory/ssh-agent@v0.8.0
         with:
