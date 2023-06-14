@@ -4,7 +4,7 @@ on: [push]
 jobs:
 
   build:
-    runs-on: ubuntu-22.04 #Mettre ubuntu-latest revient au même
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       #CACHE
@@ -118,7 +118,7 @@ jobs:
       packages: write
     steps:
       - uses: webfactory/ssh-agent@v0.8.0
-      - name: 
+      - name: deploy prod ssh
         with:
           ssh-private-key: ${{secrets.SSH_KEY}}
       - run: |
