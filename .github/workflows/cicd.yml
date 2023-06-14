@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./docker/next/Dockerfile
+          file: ./docker/ghcr.io/plumpqueen/devopsrepo/nodejs-my-website/Dockerfile
           push: true
           tags: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:dev
 
@@ -68,7 +68,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./docker/next/Dockerfile
+          file: ./docker/ghcr.io/plumpqueen/devopsrepo/nodejs-my-website/Dockerfile
           push: true
           tags: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:prod
   test:
