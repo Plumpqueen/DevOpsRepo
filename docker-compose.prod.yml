@@ -4,6 +4,10 @@ services:
     restart: always
     ports:
       - 3000:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=PathPrefix(`whoami.localhost`)" #PathPrefix = règle voir doc router traefik
+      - "traefik.http.routers.whoami.entrypoints=web"
 
   adminer:
     image: adminer
@@ -26,3 +30,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:latest --interval=30 #watchtower va check toutes les 30sec s'il y a une màj
+
+
+networks: # recherche du network créé dans docker-compose.global
+  reverse-proxy:
+    name: reverse-proxy
+    driver: bridge

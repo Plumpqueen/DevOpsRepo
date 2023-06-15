@@ -22,3 +22,4 @@ services:
       MARIADB_RANDOM_ROOT_PASSWORD: "yes"
     volumes:
       - ./docker/db/data:/var/lib/mysql
+
