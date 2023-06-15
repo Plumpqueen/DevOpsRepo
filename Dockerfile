@@ -1,5 +1,7 @@
 FROM debian:10 AS nodejs-my-website
 
+#LABEL org.opencontainers.image.source https://github.com/plumpqueen/devopsrepo
+
 RUN apt-get update -yq \
 && apt-get install curl gnupg -yq \
 && curl -sL https://deb.nodesource.com/setup_18.x | bash \
@@ -17,9 +19,8 @@ RUN npm run build
 
 EXPOSE 3000
 
-COPY docker/next/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY docker/ghcr.io/plumpqueen/devopsrepo/nodejs-my-website/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD npm run start
-

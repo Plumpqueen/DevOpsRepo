@@ -41,8 +41,6 @@ jobs:
       - name: Build and Push Docker images to Github Registry
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./docker/ghcr.io/plumpqueen/devopsrepo/nodejs-my-website/Dockerfile
           push: true
           tags: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:dev
 
@@ -67,8 +65,6 @@ jobs:
       - name: Build and Push Docker images to Github Registry
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./docker/ghcr.io/plumpqueen/devopsrepo/nodejs-my-website/Dockerfile
           push: true
           tags: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:prod
   test:
