@@ -14,7 +14,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          On fait du docker
+          Prod/Dev !On fait du docker
         </h1>
 
         <p className={styles.description}>
