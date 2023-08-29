@@ -2,18 +2,24 @@ services:
   next:
     image: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:latest
     restart: always
-    ports:
-      - 3000:3000
+    networks:
+      - reverse-proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=PathPrefix(`whoami.localhost`)" #PathPrefix = règle voir doc router traefik
-      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.next-production.rule=PathPrefix(`/next`)"
+      - "traefik.http.routers.next-production.entrypoints=web"
+      #- "traefik.http.middlewares.test-stripprefix.stripprefix.prefixes=/next"
+      #- "traefik.http.routers.next-production.middleware=test-stripprefix"
 
   adminer:
     image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+    #restart: always
+    networks:
+      - reverse-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer-production.rule=PathPrefix(`/adminer`)"
+      - "traefik.http.routers.adminer-production.entrypoints=web"
 
   db:
     image: mariadb:10.6
@@ -25,11 +31,11 @@ services:
     volumes:
       - ./docker/db/data:/var/lib/mysql
 
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:latest --interval=30 #watchtower va check toutes les 30sec s'il y a une màj
+  #watchtower:
+  #  image: containrrr/watchtower
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #  command: ghcr.io/plumpqueen/devopsrepo/nodejs-my-website:latest --interval=30 #watchtower va check toutes les 30sec s'il y a une màj
 
 
 networks: # recherche du network créé dans docker-compose.global
